@@ -1,0 +1,44 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# Data Processing and File Handling
+pyarrow = "*"           # For handling Parquet files
+fastparquet = "*"       # An alternative engine for working with Parquet files
+pandas = "*"            # For data manipulation and analysis
+numpy = "*"             # Efficient numerical computations, often used with Pandas
+
+# MinIO and Object Storage
+minio = "*"             # For interacting with S3-compatible object storage like MinIO
+
+# TrinoDB Connector
+trino = "*"             # For connecting to TrinoDB
+
+# Visualization and Analytics
+matplotlib = "*"        # Data visualization
+seaborn = "*"           # Advanced statistical visualizations
+plotly = "*"            # Interactive plotting and dashboards
+
+# Logging and Monitoring
+loguru = "*"            # An easy-to-use logging library with rich capabilities
+
+# Scheduling and Automation
+schedule = "*"          # Scheduling Python tasks, useful for automating data operations
+
+# Jupyter for Notebooks
+jupyter = "*"           # Running Jupyter notebooks for interactive data exploration
+
+# Utility Tools
+requests = "*"          # For making HTTP requests if needed for APIs
+tqdm = "*"              # For progress bars, useful in data processing loops
+
+[dev-packages]
+black = "*"             # For code formatting
+flake8 = "*"            # For linting to ensure code quality
+pytest = "*"            # For testing to ensure code reliability
+mypy = "*"              # For type checking in Python
+
+[requires]
+python_version = "3.11"

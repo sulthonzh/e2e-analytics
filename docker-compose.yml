@@ -1,0 +1,68 @@
+services:
+  mariadb:
+    image: mariadb:10.5
+    platform: linux/arm64
+    container_name: hive-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: metastore
+      MYSQL_USER: hive
+      MYSQL_PASSWORD: hivepassword
+    ports:
+      - "3306:3306"
+
+  hive-metastore:
+    image: sulthonzh/hive-metastore:latest
+    platform: linux/arm64
+    container_name: hive-metastore
+    environment:
+      HIVE_METASTORE_DB_TYPE: mysql
+      HIVE_METASTORE_DB_HOST: hive-mariadb
+      HIVE_METASTORE_DB_PORT: 3306
+      HIVE_METASTORE_DB_NAME: metastore
+      HIVE_METASTORE_DB_USER: hive
+      HIVE_METASTORE_DB_PASSWORD: hivepassword
+    ports:
+      - "9083:9083"
+    depends_on:
+      - mariadb
+    volumes:
+      - ./metastore:/data
+
+  minio:
+    image: minio/minio
+    platform: linux/arm64
+    container_name: minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data
+
+  trino:
+    image: trinodb/trino
+    platform: linux/arm64
+    container_name: trino
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./conf:/etc/trino/catalog
+    depends_on:
+      - hive-metastore
+      - minio
+
+  jupyter:
+    image: jupyter/scipy-notebook
+    platform: linux/arm64
+    container_name: jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+      - ./data:/home/jovyan/data
+    environment:
+      JUPYTER_TOKEN: "your_secure_token"
+    depends_on:
+      - trino
+      - minio
